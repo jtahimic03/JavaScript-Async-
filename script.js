@@ -18,42 +18,43 @@ function displayPhotos(photos, description) {
     const gallery = document.getElementById('marsPhotoGallery');
     gallery.innerHTML = `<h2>${description}</h2>`;
     
-    if (photos.length === 0) {
+    // checks if any photos in the array
+    if (photos.length === 0) { //if none it will return the message 
         gallery.innerHTML += "<p>No photos available for this date.</p>";
         return;
     }
 
     // Display up to 3 photos
-    photos.slice(0, 3).forEach(photo => {
-        const img = document.createElement('img');
-        img.src = photo.img_src;
+    photos.slice(0, 3).forEach(photo => { // takes the first three photos of the array 
+        const img = document.createElement('img'); //for each photo its creates an img element
+        img.src = photo.img_src; //sets the photo to img.src 
         img.alt = `Photo by ${photo.rover.name} on ${photo.earth_date}`;
-        gallery.appendChild(img);
+        gallery.appendChild(img); //attaches the photo to the gallery 
     });
 }
 
 // Load and display photos for a specific date
-async function loadPhotos(date, description) {
+async function loadPhotos(date, description) { 
     try {
-        const photos = await fetchPhotos(date);
-        displayPhotos(photos, description);
+        const photos = await fetchPhotos(date); //calles the funtion with te specific date 
+        displayPhotos(photos, description);// calls the displayfunction passing the retrieved photos and description
     } catch (error) {
-        console.error("Failed to load photos:", error);
+        console.error("Failed to load photos:", error);// if any errors occur it will log it in the consol
     }
 }
 
 // Load initial photos on page load
-document.addEventListener('DOMContentLoaded', () => {
-    const initialDate = "2015-07-03";
-    loadPhotos(initialDate, `Mars Rover Photos from ${initialDate}`);
+document.addEventListener('DOMContentLoaded', () => {// waits till the html doc is fully loaded
+    const initialDate = "2015-07-03"; //set as the default date 
+    loadPhotos(initialDate, `Mars Rover Photos from ${initialDate}`);//calls loadsphotos with initial date and description once loaded
 });
 
 // Load photos for the selected date
-document.getElementById('photosButton').addEventListener('click', () => {
+document.getElementById('photosButton').addEventListener('click', () => {//once clicked it retrieves the date input 
     const date = document.getElementById('dateInput').value;
     if (date) {
         loadPhotos(date, `Mars Rover Photos from ${date}`);
     } else {
-        alert("Please select a date.");
+        alert("Please select a date.");// date not chosen it will display this message
     }
 });
