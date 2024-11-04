@@ -13,3 +13,47 @@ async function fetchPhotos(date) {
     return data.photos;
 }
 
+// Display photos and description in the gallery
+function displayPhotos(photos, description) {
+    const gallery = document.getElementById('marsPhotoGallery');
+    gallery.innerHTML = `<h2>${description}</h2>`;
+    
+    if (photos.length === 0) {
+        gallery.innerHTML += "<p>No photos available for this date.</p>";
+        return;
+    }
+
+    // Display up to 3 photos
+    photos.slice(0, 3).forEach(photo => {
+        const img = document.createElement('img');
+        img.src = photo.img_src;
+        img.alt = `Photo by ${photo.rover.name} on ${photo.earth_date}`;
+        gallery.appendChild(img);
+    });
+}
+
+// Load and display photos for a specific date
+async function loadPhotos(date, description) {
+    try {
+        const photos = await fetchPhotos(date);
+        displayPhotos(photos, description);
+    } catch (error) {
+        console.error("Failed to load photos:", error);
+    }
+}
+
+// Load initial photos on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const initialDate = "2015-07-03";
+    loadPhotos(initialDate, `Mars Rover Photos from ${initialDate}`);
+});
+
+// Load photos for the selected date
+document.getElementById('photosButton').addEventListener('click', () => {
+    const date = document.getElementById('dateInput').value;
+    if (date) {
+        loadPhotos(date, `Mars Rover Photos from ${date}`);
+    } else {
+        alert("Please select a date.");
+    }
+});
